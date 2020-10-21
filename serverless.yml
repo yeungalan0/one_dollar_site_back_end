@@ -1,0 +1,112 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: one-dollar-site
+# app and org for use with dashboard.serverless.com
+app: one-dollar-site
+org: yeungalan0
+
+plugins:
+  - serverless-offline
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+# you can overwrite defaults here
+#  stage: dev
+  region: us-west-2
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource:
+        Fn::GetAtt:
+          - OneDollarSiteCountTable
+          - Arn
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource:
+        Fn::GetAtt:
+          - OneDollarSiteOrdersTable
+          - Arn
+
+# you can define service wide environment variables here
+  environment:
+    DYNAMO_ENDPOINT: ${param:DYNAMO_ENDPOINT, 'http://localhost:4566'}
+    DYNAMODB_COUNT_TABLE: ${self:service}-${opt:stage, self:provider.stage}-count
+    DYNAMODB_ORDERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-orders
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  count:
+    handler: handler.count
+    events:
+      - http:
+          path: count
+          method: post
+          cors: true
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    OneDollarSiteCountTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${opt:stage, self:provider.stage}-count
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    OneDollarSiteOrdersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${opt:stage, self:provider.stage}-orders
+        AttributeDefinitions:
+          - AttributeName: order_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: order_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
