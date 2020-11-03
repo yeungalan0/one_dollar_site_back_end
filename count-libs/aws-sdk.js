@@ -6,7 +6,7 @@ const AWS = require('aws-sdk')
 AWS.config.update({ region: 'us-west-2' })
 
 if (process.env.IS_LOCAL || process.env.IS_OFFLINE) {
-  AWS.config.update({ endpoint: process.env.DYNAMO_ENDPOINT })
+  AWS.config.update({ endpoint: process.env.LOCAL_DYNAMO_ENDPOINT })
 }
 
 const docClient = new AWS.DynamoDB.DocumentClient()

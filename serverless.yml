@@ -56,7 +56,7 @@ provider:
 
 # you can define service wide environment variables here
   environment:
-    DYNAMO_ENDPOINT: ${param:DYNAMO_ENDPOINT, 'http://localhost:4566'}
+    LOCAL_DYNAMO_ENDPOINT: 'http://localhost:4566'
     DYNAMODB_COUNT_TABLE: ${self:service}-${opt:stage, self:provider.stage}-count
     DYNAMODB_ORDERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-orders
 
