@@ -10,9 +10,6 @@
     "jest": "^23.6.0",
     "serverless-offline": "^6.8.0"
   },
-  "scripts": {
-    "test": "jest"
-  },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.2",
     "aws-sdk": "^2.784.0"
