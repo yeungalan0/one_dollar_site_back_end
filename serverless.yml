@@ -59,6 +59,8 @@ provider:
     LOCAL_DYNAMO_ENDPOINT: 'http://localhost:4566'
     DYNAMODB_COUNT_TABLE: ${self:service}-${opt:stage, self:provider.stage}-count
     DYNAMODB_ORDERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-orders
+    PAYPAL_CLIENT_ID: ${param:PAYPAL_CLIENT_ID, env:LOCAL_PAYPAL_CLIENT_ID}
+    PAYPAL_CLIENT_SECRET: ${param:PAYPAL_CLIENT_SECRET, env:LOCAL_PAYPAL_CLIENT_SECRET}
 
 # you can add packaging information here
 #package:
