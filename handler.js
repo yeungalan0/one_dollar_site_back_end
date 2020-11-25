@@ -14,7 +14,7 @@ module.exports.count = async event => {
     const previouslySaved = await getOrderDetailsDynamoDb(orderDetails)
     if (isEmptyObject(previouslySaved)) {
       const dynamoObj = await incrementCount()
-      saveOrderDetails(orderDetails, dynamoObj.Attributes.count)
+      await saveOrderDetails(orderDetails, dynamoObj.Attributes.count)
       return successMessage(dynamoObj.Attributes.count, true)
     } else {
       console.debug(`Already processed this order_id. Sending previous count of ${previouslySaved.Item.count}`)
