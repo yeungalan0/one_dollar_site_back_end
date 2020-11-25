@@ -83,6 +83,7 @@ functions:
 #    environment:
 #      variable2: value2
 
+# TODO: Move DynamoDB table to a new section/service?
 # you can add CloudFormation resource templates here
 resources:
   Resources:

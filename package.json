@@ -8,10 +8,14 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.2",
     "jest": "^23.6.0",
+    "jest-dynalite": "^3.2.0",
     "serverless-offline": "^6.8.0"
   },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.2",
     "aws-sdk": "^2.784.0"
+  },
+  "scripts": {
+    "test": "jest -c ./jest/jest.config.js --coverage"
   }
 }

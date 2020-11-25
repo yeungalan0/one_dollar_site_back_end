@@ -1,6 +1,6 @@
 'use strict'
 
-const { getOrderDetailsDynamodDb, saveOrderDetails, incrementCount } = require('./count-libs/aws-sdk')
+const { getOrderDetailsDynamoDb, saveOrderDetails, incrementCount } = require('./count-libs/aws-sdk')
 const { isEmptyObject, successMessage, handleError } = require('./count-libs/misc')
 const { getOrderDetailsPayPal, validateOrderDetails } = require('./count-libs/paypal-sdk')
 
@@ -11,7 +11,7 @@ module.exports.count = async event => {
   try {
     const orderDetails = await getOrderDetailsPayPal(orderID)
     validateOrderDetails(orderDetails)
-    const previouslySaved = await getOrderDetailsDynamodDb(orderDetails)
+    const previouslySaved = await getOrderDetailsDynamoDb(orderDetails)
     if (isEmptyObject(previouslySaved)) {
       const dynamoObj = await incrementCount()
       saveOrderDetails(orderDetails, dynamoObj.Attributes.count)

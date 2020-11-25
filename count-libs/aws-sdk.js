@@ -5,15 +5,22 @@ const AWS = require('aws-sdk')
 
 AWS.config.update({ region: 'us-west-2' })
 
+let dynamoConfig = {}
 if (process.env.IS_LOCAL || process.env.IS_OFFLINE) {
-  AWS.config.update({ endpoint: process.env.LOCAL_DYNAMO_ENDPOINT })
+  dynamoConfig = { endpoint: process.env.LOCAL_DYNAMO_ENDPOINT }
+} else if (process.env.MOCK_DYNAMODB_ENDPOINT) {
+  dynamoConfig = {
+    endpoint: process.env.MOCK_DYNAMODB_ENDPOINT,
+    sslEnabled: false,
+    region: 'local'
+  }
 }
 
-const docClient = new AWS.DynamoDB.DocumentClient()
+const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig)
 
 const params = {
   TableName: process.env.DYNAMODB_COUNT_TABLE,
-  Key: { name: 'test_count' },
+  Key: { name: 'counter' },
   UpdateExpression: 'ADD #c :one',
   ExpressionAttributeValues: { ':one': 1 },
   ExpressionAttributeNames: { '#c': 'count' },
@@ -41,7 +48,7 @@ async function saveOrderDetails (orderDetails, count) {
   console.log(`Successfully saved order details: ${orderDetails.result.id}`)
 }
 
-async function getOrderDetailsDynamodDb (orderDetails) {
+async function getOrderDetailsDynamoDb (orderDetails) {
   const orderParams = {
     TableName: process.env.DYNAMODB_ORDERS_TABLE,
     Key: { order_id: orderDetails.result.id }
@@ -50,4 +57,4 @@ async function getOrderDetailsDynamodDb (orderDetails) {
   return docClient.get(orderParams).promise()
 }
 
-module.exports = { incrementCount, saveOrderDetails, getOrderDetailsDynamodDb }
+module.exports = { incrementCount, saveOrderDetails, getOrderDetailsDynamoDb }

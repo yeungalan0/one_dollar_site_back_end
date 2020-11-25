@@ -13,13 +13,13 @@ awslocal dynamodb create-table \
 awslocal dynamodb put-item \
     --table-name one-dollar-site-dev-count \
     --item '{
-      "name": {"S": "test_count"},
+      "name": {"S": "counter"},
       "count": {"N": "0"}
     }'
 ```
 
 ```
-awslocal dynamodb get-item --table-name one-dollar-site-dev-count --key '{"name": {"S": "test-count"}}'
+awslocal dynamodb get-item --table-name one-dollar-site-dev-count --key '{"name": {"S": "counter"}}'
 ```
 
 ```
