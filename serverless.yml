@@ -39,9 +39,13 @@ provider:
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:UpdateItem
+        - dynamodb:PutItem
       Resource:
-        Fn::GetAtt:
+        - Fn::GetAtt:
           - OneDollarSiteCountTable
+          - Arn
+        - Fn::GetAtt:
+          - OneDollarSiteOrdersTable
           - Arn
     - Effect: Allow
       Action:
