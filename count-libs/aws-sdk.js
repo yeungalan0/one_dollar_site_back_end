@@ -38,7 +38,8 @@ async function saveOrderDetails (orderDetails, count) {
       order_id: orderDetails.result.id,
       amount: orderDetails.result.purchase_units[0].amount.value,
       payee_email: orderDetails.result.payer.email_address,
-      full_name: `${orderDetails.result.payer.given_name} ${orderDetails.result.payer.surname}`,
+      first_name: orderDetails.result.payer.name.given_name,
+      last_name: orderDetails.result.payer.name.surname,
       create_time: orderDetails.result.create_time,
       count: count
     }
@@ -48,10 +49,10 @@ async function saveOrderDetails (orderDetails, count) {
   console.log(`Successfully saved order details: ${orderDetails.result.id}`)
 }
 
-async function getOrderDetailsDynamoDb (orderDetails) {
+async function getOrderDetailsDynamoDb (orderId) {
   const orderParams = {
     TableName: process.env.DYNAMODB_ORDERS_TABLE,
-    Key: { order_id: orderDetails.result.id }
+    Key: { order_id: orderId }
   }
 
   return docClient.get(orderParams).promise()

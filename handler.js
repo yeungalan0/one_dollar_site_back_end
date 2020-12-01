@@ -7,12 +7,11 @@ const { getOrderDetailsPayPal, validateOrderDetails } = require('./count-libs/pa
 module.exports.count = async event => {
   const orderID = JSON.parse(event.body).orderID
   console.debug(`Processing order_id: ${orderID}`)
-
   try {
-    const orderDetails = await getOrderDetailsPayPal(orderID)
-    validateOrderDetails(orderDetails)
-    const previouslySaved = await getOrderDetailsDynamoDb(orderDetails)
+    const previouslySaved = await getOrderDetailsDynamoDb(orderID)
     if (isEmptyObject(previouslySaved)) {
+      const orderDetails = await getOrderDetailsPayPal(orderID)
+      validateOrderDetails(orderDetails)
       const dynamoObj = await incrementCount()
       await saveOrderDetails(orderDetails, dynamoObj.Attributes.count)
       return successMessage(dynamoObj.Attributes.count, true)

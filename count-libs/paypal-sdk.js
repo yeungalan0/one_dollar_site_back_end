@@ -6,8 +6,8 @@ const { BadRequestError } = require('./misc')
 const checkoutNodeJssdk = require('@paypal/checkout-server-sdk')
 const payPalClient = require('./payPalClient')
 
-async function getOrderDetailsPayPal (orderID) {
-  const request = new checkoutNodeJssdk.orders.OrdersGetRequest(orderID)
+async function getOrderDetailsPayPal (orderId) {
+  const request = new checkoutNodeJssdk.orders.OrdersGetRequest(orderId)
 
   return payPalClient.client().execute(request)
 }

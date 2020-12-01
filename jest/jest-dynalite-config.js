@@ -11,7 +11,7 @@ module.exports = {
       data: [
         {
           name: 'counter',
-          count: 0
+          count: 1
         }
       ]
     },
@@ -28,7 +28,8 @@ module.exports = {
           order_id: 'test-123',
           amount: 1.00,
           payee_email: 'test@test.com',
-          full_name: 'awesome tester person',
+          first_name: 'awesome',
+          last_name: 'tester',
           create_time: 'today',
           count: 1
         }

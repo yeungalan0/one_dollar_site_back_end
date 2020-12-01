@@ -2,24 +2,17 @@
 
 require('jest-dynalite/withDb')
 const { getOrderDetailsDynamoDb, saveOrderDetails, incrementCount } = require('./aws-sdk')
+const { FakeOrderDetails, getSeededDynamoOrderDetails } = require('./test-utils/utils')
 
 test('incrementCount should increment the count', async () => {
   const dynamoObj = await incrementCount()
-  expect(dynamoObj.Attributes.count).toStrictEqual(1)
+  expect(dynamoObj.Attributes.count).toStrictEqual(2)
 })
 
 test('getOrderDetailsDynamoDb should return expected order details', async () => {
-  const fakeOrderDetails = { result: { id: 'test-123' } }
-  const expectedOrderDetails = {
-    order_id: 'test-123',
-    amount: 1.00,
-    payee_email: 'test@test.com',
-    full_name: 'awesome tester person',
-    create_time: 'today',
-    count: 1
-  }
+  const expectedOrderDetails = getSeededDynamoOrderDetails()
 
-  const actualOrderDetails = await getOrderDetailsDynamoDb(fakeOrderDetails)
+  const actualOrderDetails = await getOrderDetailsDynamoDb(expectedOrderDetails.order_id)
 
   expect(actualOrderDetails).toBeDefined()
   expect(actualOrderDetails.Item).toEqual(expectedOrderDetails)
@@ -30,27 +23,22 @@ test('saveOrderDetails should save the order details', async () => {
     order_id: 'test-saveOrderDetails',
     amount: 1.00,
     payee_email: 'test-saveOrderDetails@testing.com',
-    full_name: 'jest tester',
+    first_name: 'jest',
+    last_name: 'tester',
     create_time: 'now',
     count: 42
   }
-  const fakeOrderDetails = {
-    result: {
-      id: expectedOrderDetails.order_id,
-      purchase_units: [
-        { amount: { value: expectedOrderDetails.amount } }
-      ],
-      payer: {
-        email_address: expectedOrderDetails.payee_email,
-        given_name: expectedOrderDetails.full_name.split(' ')[0],
-        surname: expectedOrderDetails.full_name.split(' ')[1]
-      },
-      create_time: expectedOrderDetails.create_time
-    }
-  }
+  const fakeOrderDetails = new FakeOrderDetails({
+    orderId: expectedOrderDetails.order_id,
+    value: expectedOrderDetails.amount,
+    payeeEmail: expectedOrderDetails.payee_email,
+    givenName: expectedOrderDetails.first_name,
+    surName: expectedOrderDetails.last_name,
+    createTime: expectedOrderDetails.create_time
+  })
 
   await saveOrderDetails(fakeOrderDetails, 42)
 
-  const actualOrderDetails = await getOrderDetailsDynamoDb(fakeOrderDetails)
+  const actualOrderDetails = await getOrderDetailsDynamoDb(fakeOrderDetails.result.id)
   expect(actualOrderDetails.Item).toEqual(expectedOrderDetails)
 })
